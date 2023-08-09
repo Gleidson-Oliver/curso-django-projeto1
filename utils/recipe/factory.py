@@ -36,7 +36,9 @@ def make_recipe():
         'cover': {
             'url': 'https://loremflickr.com/%s/%s/food,cook' % rand_ratio(),
 
-        }
+        },
+
+        'urladmin': 'http://127.0.0.1:8000/admin/'
     }
 
 

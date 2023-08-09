@@ -1,9 +1,14 @@
 {% extends 'global/base_header_footer.html' %}
-        
+
 {% block content %}
 <div class="main-content container main-content-list">
-    {% for recipe in recipes %}
+   {% for recipe in recipes %}
         {% include 'recipes/partials/recipe.html' %}
-    {% endfor %}
+   {% empty %}
+       <div class="center m-y">
+          <h1>Recipes not found here 🥲 </h1>
+       </div>
+   {% endfor %}
+
 </div>
 {% endblock content %}
