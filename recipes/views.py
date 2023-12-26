@@ -24,7 +24,7 @@ def category(request, category_id):
     })
 
 
-def recipes(request, recipe_id):
+def recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe,
                                pk=recipe_id, is_published=True)
 
