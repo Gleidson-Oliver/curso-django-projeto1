@@ -54,3 +54,11 @@ class TestRecipModels(TestRecipeBase):
         self.recipe.save()
         self.assertFalse(self.recipe.is_published)
         ...
+
+    def test_recipe_string_representation(self):
+        needed = 'testing title'
+        self.recipe.title = needed
+        self.recipe.full_clean()
+        self.recipe.save()
+        self.assertEqual(str(self.recipe), 'testing title')
+        ...

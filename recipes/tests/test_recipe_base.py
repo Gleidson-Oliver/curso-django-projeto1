@@ -9,7 +9,7 @@ class TestRecipeBase(TestCase):
     def setUp(self) -> None:
         return super().setUp()
 
-    def make_category(self):
+    def make_category(self, name):
         return Category.objects.create(name='category_test')
 
     def make_author(
@@ -52,7 +52,7 @@ class TestRecipeBase(TestCase):
             author_data = {}
 
         return Recipe.objects.create(
-            category=self.make_category(**category_data),
+            category=self.make_category(**category_data, name='default'),
             author=self.make_author(**category_data),
             title=title,
             description=description,
