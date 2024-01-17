@@ -7,6 +7,7 @@ from recipes.models import Category, Recipe, User
 class TestRecipeBase(TestCase):
 
     def setUp(self) -> None:
+
         return super().setUp()
 
     def make_category(self, name):
@@ -16,7 +17,7 @@ class TestRecipeBase(TestCase):
         self,
         first_name='davi_test',
         last_name='santos_test',
-        username='davi_username_test',
+        username='user',
         email='davi@gmail.com',
         password='12345'
     ):
@@ -53,7 +54,7 @@ class TestRecipeBase(TestCase):
 
         return Recipe.objects.create(
             category=self.make_category(**category_data, name='default'),
-            author=self.make_author(**category_data),
+            author=self.make_author(**author_data),
             title=title,
             description=description,
             slug=slug,
