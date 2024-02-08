@@ -1,4 +1,7 @@
 # from django.http import HttpResponse
+import os
+
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
@@ -9,21 +12,15 @@ from utils.pagination import make_pagination
 
 from .models import Recipe
 
+PER_PAGE = os.environ.get('PER_PAGE', 4)
 
-# Create your views here.
+
 def home(request):
     recipe = Recipe.objects.filter(
         is_published=True).order_by("-id")
 
-    pagination = Paginator(recipe, 9)
-
-    try:
-        current_page = int(request.GET.get('page', 1))
-    except ValueError:
-        current_page = 1
-    obj_page = pagination.get_page(current_page)
-
-    pagination_range = make_pagination(pagination.page_range, 4, current_page)
+    obj_page, pagination_range = make_pagination(
+        request, recipe, PER_PAGE)
 
     return render(request, 'recipes/pages/home.html', context={
         'recipes': obj_page,
@@ -32,13 +29,20 @@ def home(request):
 
 
 def category(request, category_id):
+    recipes = get_list_or_404(
+        Recipe.objects.filter(
+            category__id=category_id,
+            is_published=True,
+        ).order_by('-id')
+    )
 
-    recipe = get_list_or_404(Recipe.objects.
-                             filter(category__id=category_id, is_published=True).order_by("-id"))  # noqa:E501
+    page_obj, pagination_range = make_pagination(
+        request, recipes, per_page=PER_PAGE)
 
     return render(request, 'recipes/pages/category.html', context={
-        'recipes': recipe,
-        'title': f'{recipe[0].category.name}  - Category | '
+        'recipes': page_obj,
+        'pagination_range': pagination_range,
+        'title': f'{recipes[0].category.name} - Category | '
     })
 
 
@@ -59,17 +63,24 @@ def search(request):
         raise Http404()
 
     recipe = Recipe.objects.filter(
-        Q(title__icontains=search_term) | Q(description__icontains=search_term)
-    ).order_by('-id')
+        Q(title__icontains=search_term) | Q(description__icontains=search_term) | Q(category__name__icontains=search_term)).order_by('-id')
 
-    pagination = Paginator(recipe, 9)
+    if not recipe:
+        messages.error(
+            request, f"""
+            oi, vi que vc pesquisou por ( {search_term} ),
+            infelizmente não existem resultados para esta pesquisa""")
+    else:
+        messages.success(
+            request, f'oi, vi que vc pesquisou por ( {search_term} ), segue abaixo os resultados')
 
-    current_page = request.GET.get('page', 1)
-
-    obj_page = pagination.get_page(current_page)
+    obj_page, pagination_range = make_pagination(
+        request, recipe, PER_PAGE)
 
     return render(request, 'recipes/pages/search.html', {
         'page_title': f'for search "{search_term}"',
         'search_term': search_term,
         'recipes': obj_page,
+        'pagination_range': pagination_range,
+        'additional_url_query': f'&q={search_term}'
     })
