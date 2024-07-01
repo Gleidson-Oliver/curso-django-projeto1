@@ -1,7 +1,11 @@
+
 from django.urls import path
 
-from . import views
+from authors.views import register_view
+
+app_name = 'authors'
 
 urlpatterns = [
-    path('register/', views.register, name='register')
+    path('register/', register_view, name='create'),
+
 ]

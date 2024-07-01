@@ -27,9 +27,9 @@ class RecipeSearchViewTest(TestRecipeBase):
         title2 = 'this is recipe two'
         url_search = reverse('recipes:search')
 
-        recipe1 = self.make_recipe(title=title1, author_data={
+        recipe1 = self.make_recipe(title=title1, authors_data={
                                    'username': 'one'}, slug='one',)
-        recipe2 = self.make_recipe(title=title2, author_data={
+        recipe2 = self.make_recipe(title=title2, authors_data={
                                    'username': 'two'}, slug='two')
 
         response1 = self.client.get(f'{url_search}?q={title1}')

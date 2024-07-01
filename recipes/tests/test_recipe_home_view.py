@@ -35,7 +35,7 @@ class RecipeHomeViewTest(TestRecipeBase):
 
         for i in range(20):
             kwargs = {'is_published': True, 'slug': f'duplicada{i}',
-                      'author_data': {'username': f'duplicado{i}'}}
+                      'authors_data': {'username': f'duplicado{i}'}}
             self.make_recipe(**kwargs)
 
         response = self.client.get(reverse('recipes:home'))
@@ -70,3 +70,15 @@ class RecipeHomeViewTest(TestRecipeBase):
         )
         # self.assertEqual()
         ...
+
+    @patch('recipes.views.PER_PAGE', new=3)
+    def test_invalid_page_query_uses_page_one(self):
+
+        for i in range(8):
+            kwargs = {'is_published': True, 'slug': f'duplicada{i}',
+                      'authors_data': {'username': f'duplicado{i}'}}
+            self.make_recipe(**kwargs)
+
+        response = self.client.get(reverse('recipes:home') + '?page=1A21')
+        ...
+        self.assertEqual(response.context['recipes'].number, 1)
