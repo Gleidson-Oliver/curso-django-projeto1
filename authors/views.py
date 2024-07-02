@@ -23,3 +23,11 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, 'authors/pages/register.html', {'form': form})
+
+
+def login_view(request):
+    return render(request, 'authors/pages/register.html')
+
+
+def login_create(request):
+    return render(request, 'authors/pages/register.html')
