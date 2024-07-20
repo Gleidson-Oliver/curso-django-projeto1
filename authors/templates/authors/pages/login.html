@@ -1,19 +1,24 @@
-{% extends "global/base.html" %}
+{% extends 'global/base.html' %}
 
-
-{% block title %}Login |{% endblock title %}
+{% block title %}Login | {% endblock title %}
 
 {% block content %}
-
-{% include "recipes/partials/messages.html" %}
-    
   <div class="main-content center container">
-    <h2>Login </h2>
+    <h2>Login</h2>
+    {% if request.user.is_authenticated %}
+      <div>   
+        <form class="inline-form" action="{% url "authors:logout" %}" method="post">
+          <input type="hidden" name="username" value="{{request.user.username}}">
+          {% csrf_token %}
+          {{ request.user.username }}.
+            Please, 
+          <button class="plaintext-button"type="submit"> clique here, </button> to logout.
+        </form>
+      </div>
+
+    {% endif %}
   </div>
 
-  <div class="main-content container">
-
-    
-  </div>
-
+  {% include 'global/partials/messages.html' %}
+  {% include 'global/partials/form.html' %} 
 {% endblock content %}

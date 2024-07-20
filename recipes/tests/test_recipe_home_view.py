@@ -33,10 +33,7 @@ class RecipeHomeViewTest(TestRecipeBase):
     @patch('recipes.views.PER_PAGE', new=10)
     def test_recipe_home_pagination_load_correct_expected_range(self):
 
-        for i in range(20):
-            kwargs = {'is_published': True, 'slug': f'duplicada{i}',
-                      'authors_data': {'username': f'duplicado{i}'}}
-            self.make_recipe(**kwargs)
+        self.make_recipe_in_batch(qtd=20)
 
         response = self.client.get(reverse('recipes:home'))
         recipes = response.context['recipes']
@@ -74,10 +71,7 @@ class RecipeHomeViewTest(TestRecipeBase):
     @patch('recipes.views.PER_PAGE', new=3)
     def test_invalid_page_query_uses_page_one(self):
 
-        for i in range(8):
-            kwargs = {'is_published': True, 'slug': f'duplicada{i}',
-                      'authors_data': {'username': f'duplicado{i}'}}
-            self.make_recipe(**kwargs)
+        self.make_recipe_in_batch(qtd=8)
 
         response = self.client.get(reverse('recipes:home') + '?page=1A21')
         ...

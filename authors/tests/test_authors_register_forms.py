@@ -4,7 +4,8 @@ from django.test import TestCase as DjangoTestCase
 from django.urls import reverse
 from parameterized import parameterized
 
-from authors.register_form import RegisterForm
+from authors.forms.register_form import RegisterForm
+from utils.django_forms import add_attr, add_placeholder, strong_password
 
 
 class AuthorRegisterFormUnitTest(TestCase):
@@ -65,7 +66,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         return super().setUp(*args, **kwargs)
 
     def test_form_register_in_request_get(self):
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.get(url)
         field = 'username'
         self.assertIn(field, response.context['form'].fields)
@@ -82,7 +83,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
         self.form_data[field] = ''
 
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIn(msg, response.content.decode('utf-8'))
@@ -99,7 +100,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
         msg = 'joe'
         self.form_data[field] = msg
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIn(expected, response.context['form'].errors.get(field))
@@ -113,7 +114,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
         msg = 'j'*151
         self.form_data[field] = msg
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIn(expected, response.context['form'].errors.get(field))
@@ -122,7 +123,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
 
         msg = 'Password must have at least one uppercase letter, one lowercase letter and one number. The length should be at least 8 characters.'
         self.form_data['password'] = 'baucba'
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIn(msg, response.context['form'].errors.get('password'))
@@ -132,13 +133,13 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         self.form_data['password'] = 'abc@12AAa'
         self.form_data['password2'] = 'baucbaa'
         msg = 'Password and password2 must be equal'
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         response = self.client.post(url, data=self.form_data, follow=True)
 
         self.assertIn(msg, response.context['form'].errors.get('password2'))
 
     def test_whether_the_error_message_email_is_already_in_use_is_displayed_in_the_email_field(self):
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
         for i in range(2):
             response = self.client.post(url, data=self.form_data, follow=True)
             """  self.form_data['email'] = 'hvxuaasxuvaxva@gmail.com' """
@@ -149,7 +150,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         ...
 
     def test_authors_created_can_login(self):
-        url = reverse('authors:create')
+        url = reverse('authors:register_create')
 
         self.form_data.update({
             'username': 'testuser',
