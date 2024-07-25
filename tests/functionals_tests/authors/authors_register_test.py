@@ -8,14 +8,6 @@ from .base import AuthorsBaseTest
 @pytest.mark.functional_test
 class AuthorsRegisterTest(AuthorsBaseTest):
 
-    def get_by_placeholder(self, web_element, placeholder):
-        return web_element.find_element(
-            By.XPATH, f'//input[@placeholder="{placeholder}"]')
-
-    def get_by_name(self, web_element, name):
-        return web_element.find_element(
-            By.XPATH, f'//input[@name="{name}"]')
-
     def get_form(self):
         return self.browser.find_element(
             By.XPATH, '/html/body/main/div[2]/form')
@@ -94,5 +86,3 @@ class AuthorsRegisterTest(AuthorsBaseTest):
         self.assertIn('usuario registrado com sucesso',
                       self.browser.find_element(By.TAG_NAME, 'body').text
                       )
-
-        self.sleep(10)

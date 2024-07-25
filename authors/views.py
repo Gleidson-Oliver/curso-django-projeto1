@@ -56,7 +56,7 @@ def login_create(request):
             messages.error(request, 'Invalid credentials.')
 
     else:
-        messages.error(request, 'Error to validator form data')
+        messages.error(request, 'invalid username or password')
 
     return redirect(login_url)
 
@@ -64,8 +64,8 @@ def login_create(request):
 @login_required(login_url='authors:login', redirect_field_name='next')
 def logout_view(request):
     if not request.POST:
+        raise (Http404)
 
-        return redirect(reverse('authors:login'))
     if request.POST.get('username') != request.user.username:
         return redirect(reverse('authors:login'))
 
